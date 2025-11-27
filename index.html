@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="A beautiful, mobile-friendly Kanban board for managing your tasks efficiently">
+    <title>Kanban Board - Task Management</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kanban Board">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    Kanban Board
+                </h1>
+                <button class="btn-add-task" id="addTaskBtn" aria-label="Add new task">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    <span>Add Task</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Kanban Board -->
+        <main class="board-container">
+            <div class="board-scroll">
+                <!-- To Do Column -->
+                <div class="column" data-status="todo">
+                    <div class="column-header">
+                        <div class="column-title">
+                            <span class="column-icon"
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📋</span>
+                            <h2>To Do</h2>
+                            <span class="task-count" data-column="todo">0</span>
+                        </div>
+                    </div>
+                    <div class="tasks-container" id="todoTasks" data-status="todo">
+                        <!-- Tasks will be added here -->
+                    </div>
+                </div>
+
+                <!-- In Progress Column -->
+                <div class="column" data-status="inprogress">
+                    <div class="column-header">
+                        <div class="column-title">
+                            <span class="column-icon"
+                                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">⚡</span>
+                            <h2>In Progress</h2>
+                            <span class="task-count" data-column="inprogress">0</span>
+                        </div>
+                    </div>
+                    <div class="tasks-container" id="inprogressTasks" data-status="inprogress">
+                        <!-- Tasks will be added here -->
+                    </div>
+                </div>
+
+                <!-- Done Column -->
+                <div class="column" data-status="done">
+                    <div class="column-header">
+                        <div class="column-title">
+                            <span class="column-icon"
+                                style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">✓</span>
+                            <h2>Done</h2>
+                            <span class="task-count" data-column="done">0</span>
+                        </div>
+                    </div>
+                    <div class="tasks-container" id="doneTasks" data-status="done">
+                        <!-- Tasks will be added here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Add Task Modal -->
+        <div class="modal" id="taskModal">
+            <div class="modal-overlay" id="modalOverlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Add New Task</h2>
+                    <button class="btn-close" id="closeModalBtn" aria-label="Close modal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskTitle">Task Title</label>
+                        <input type="text" id="taskTitle" placeholder="Enter task title..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea id="taskDescription" placeholder="Add task description..." rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="date" id="taskDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="taskTags">Tags</label>
+                        <input type="text" id="taskTags"
+                            placeholder="Enter tags separated by commas (e.g., design, urgent, frontend)">
+                        <small class="form-hint">Separate tags with commas</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskStatus">Status</label>
+                        <select id="taskStatus">
+                            <option value="todo" selected>To Do</option>
+                            <option value="inprogress">In Progress</option>
+                            <option value="done">Done</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn-primary" id="submitBtn">Add Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('ServiceWorker registration successful:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+
+</html>
